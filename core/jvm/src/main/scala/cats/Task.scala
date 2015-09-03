@@ -14,8 +14,10 @@ sealed trait Task[A] {
 
   def map[B](f: A => B): Task[B] =
     flatMap(a => Task.now(f(a)))
+
   def flatMap[B](f: A => Task[B]): Task[B] =
-    Bind(this, f)
+    new Bind(this, f)
+
   def attempt: Task[Xor[Throwable, A]] =
     Attempt(this)
 }
@@ -66,7 +68,7 @@ object Task {
     }
   }
 
-  private[cats] final case class Bind[Z, A](t: Task[Z], f: Z => Task[A]) extends Task[A] {
+  private[cats] final class Bind[Z, A](t: Task[Z], f: Z => Task[A]) extends Task[A] {
     override def run: A = f(t.run).run
   }
 
