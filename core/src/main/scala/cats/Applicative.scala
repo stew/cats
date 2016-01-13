@@ -1,5 +1,7 @@
 package cats
 
+import dogs.Eval
+
 import simulacrum.typeclass
 
 /**

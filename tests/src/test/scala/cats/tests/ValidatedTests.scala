@@ -1,6 +1,9 @@
 package cats
 package tests
 
+import dogs._
+import dogs.Predef._
+import dogs.std._
 import cats.data.{NonEmptyList, Validated, ValidatedNel, Xor}
 import cats.data.Validated.{Valid, Invalid}
 import cats.laws.discipline.{BifunctorTests, TraverseTests, ApplicativeTests, SerializableTests, MonoidalTests}

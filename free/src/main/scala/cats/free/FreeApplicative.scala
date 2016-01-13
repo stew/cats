@@ -1,8 +1,11 @@
 package cats
 package free
 
+import dogs.Const
+import dogs.Predef._
+import cats.std.const._
+
 import cats.arrow.NaturalTransformation
-import cats.data.Const
 
 /** Applicative Functor for Free */
 sealed abstract class FreeApplicative[F[_], A] extends Product with Serializable { self =>

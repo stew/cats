@@ -1,6 +1,7 @@
 package cats
 package syntax
 
+import dogs.Predef._
 import cats.macros.Ops
 
 trait SemigroupSyntax {

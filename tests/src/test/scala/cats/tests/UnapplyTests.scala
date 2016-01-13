@@ -1,6 +1,9 @@
 package cats
 package tests
 
+import dogs._
+import dogs.Predef._
+import dogs.std._
 import cats.data._
 
 // the things we assert here are not so much important, what is

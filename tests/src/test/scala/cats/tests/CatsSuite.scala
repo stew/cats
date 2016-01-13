@@ -3,8 +3,9 @@ package tests
 
 import catalysts.Platform
 
+import dogs.Predef._
 import cats.std.AllInstances
-import cats.syntax.{AllSyntax, EqOps}
+import cats.syntax.AllSyntax
 
 import org.scalactic.anyvals.{PosZDouble, PosInt}
 import org.scalatest.{FunSuite, PropSpec, Matchers}
@@ -36,9 +37,12 @@ trait CatsSuite extends FunSuite with Matchers with GeneratorDrivenPropertyCheck
   implicit override val generatorDrivenConfig: PropertyCheckConfiguration =
     checkConfiguration
 
+/*
+ STEW TODO?
   // disable Eq syntax (by making `eqSyntax` not implicit), since it collides
   // with scalactic's equality
   override def eqSyntax[A: Eq](a: A): EqOps[A] = new EqOps[A](a)
+ */
 }
 
 trait SlowCatsSuite extends CatsSuite {
@@ -51,5 +55,5 @@ sealed trait TestInstances {
   implicit def arbitraryTry[A: Arbitrary]: Arbitrary[Try[A]] =
     Arbitrary(Gen.oneOf(
       arbitrary[A].map(Success(_)),
-      arbitrary[Throwable].map(Failure(_))))
+      arbitrary[scala.Throwable].map(Failure(_))))
 }

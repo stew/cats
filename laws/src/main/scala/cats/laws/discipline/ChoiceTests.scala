@@ -2,8 +2,10 @@ package cats
 package laws
 package discipline
 
+import dogs.Predef._
+import dogs.Xor
+import scala.{Some,None}
 import cats.arrow.Choice
-import cats.data.Xor
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop._
 

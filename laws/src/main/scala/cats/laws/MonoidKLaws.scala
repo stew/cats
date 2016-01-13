@@ -8,10 +8,10 @@ trait MonoidKLaws[F[_]] extends SemigroupKLaws[F] {
   override implicit def F: MonoidK[F]
 
   def monoidKLeftIdentity[A](a: F[A]): IsEq[F[A]] =
-    F.combine(F.empty, a) <-> a
+    F.combine(F.neutral, a) <-> a
 
   def monoidKRightIdentity[A](a: F[A]): IsEq[F[A]] =
-    F.combine(a, F.empty) <-> a
+    F.combine(a, F.neutral) <-> a
 }
 
 object MonoidKLaws {

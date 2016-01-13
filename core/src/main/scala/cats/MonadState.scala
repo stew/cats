@@ -1,5 +1,7 @@
 package cats
 
+import dogs.Predef._
+
 /** A monad that can read, update, and pass along state (e.g. `StateT`).
   *
   * A common use case for `MonadState` is for syntax, especially when

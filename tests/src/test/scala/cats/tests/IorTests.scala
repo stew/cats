@@ -1,6 +1,9 @@
 package cats
 package tests
 
+import dogs._
+import dogs.Predef._
+import dogs.std._
 import cats.data.{Xor, Ior}
 import cats.laws.discipline.{BifunctorTests, TraverseTests, MonadTests, SerializableTests, MonoidalTests}
 import cats.laws.discipline.arbitrary._

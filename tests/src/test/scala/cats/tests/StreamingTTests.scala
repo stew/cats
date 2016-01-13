@@ -3,6 +3,9 @@ package tests
 
 import algebra.laws.OrderLaws
 
+import dogs._
+import dogs.std._
+import dogs.Predef._
 import cats.data.{Streaming, StreamingT}
 import cats.laws.discipline.{MonoidalTests, CoflatMapTests, MonadCombineTests, SerializableTests}
 import cats.laws.discipline.arbitrary._

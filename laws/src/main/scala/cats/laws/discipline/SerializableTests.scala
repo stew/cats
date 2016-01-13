@@ -2,6 +2,8 @@ package cats
 package laws
 package discipline
 
+import scala.None
+import dogs.Predef._
 import org.typelevel.discipline.Laws
 
 object SerializableTests extends Laws {

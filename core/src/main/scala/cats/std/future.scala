@@ -2,11 +2,13 @@ package cats
 package std
 
 import cats.syntax.all._
-import cats.data.Xor
+import dogs.{Xor,Eval}
 
+import scala.PartialFunction
 import scala.util.control.NonFatal
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration.FiniteDuration
+import scala.Throwable
 
 trait FutureInstances extends FutureInstances1 {
 
@@ -33,8 +35,6 @@ trait FutureInstances extends FutureInstances1 {
       override def map[A, B](fa: Future[A])(f: A => B): Future[B] = fa.map(f)
     }
 
-  implicit def futureGroup[A: Group](implicit ec: ExecutionContext): Group[Future[A]] =
-    new FutureGroup[A]
 }
 
 private[std] sealed trait FutureInstances1 extends FutureInstances2 {
@@ -58,13 +58,6 @@ private[cats] class FutureSemigroup[A: Semigroup](implicit ec: ExecutionContext)
 }
 
 private[cats] class FutureMonoid[A](implicit A: Monoid[A], ec: ExecutionContext) extends FutureSemigroup[A] with Monoid[Future[A]] {
-  def empty: Future[A] =
-    Future.successful(A.empty)
-}
-
-private[cats] class FutureGroup[A](implicit A: Group[A], ec: ExecutionContext) extends FutureMonoid[A] with Group[Future[A]] {
-  def inverse(fx: Future[A]): Future[A] =
-    fx.map(_.inverse)
-  override def remove(fx: Future[A], fy: Future[A]): Future[A] =
-    (fx zip fy).map { case (x, y) => x |-| y }
+  def neutral: Future[A] =
+    Future.successful(A.neutral)
 }

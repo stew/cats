@@ -1,6 +1,8 @@
 package cats
 package arrow
 
+import dogs.Predef._
+
 /**
  * Must obey the laws defined in cats.laws.ComposeLaws.
  */

@@ -1,13 +1,15 @@
 package cats
 package std
 
-import algebra.Eq
+import dogs._
+import dogs.Predef._
+import scala.StringContext
 
-trait OptionInstances extends OptionInstances1 {
+trait OptionInstances {
   implicit val optionInstance: Traverse[Option] with MonadCombine[Option] with CoflatMap[Option] with Alternative[Option] =
     new Traverse[Option] with MonadCombine[Option] with CoflatMap[Option] with Alternative[Option] {
 
-      def empty[A]: Option[A] = None
+      def neutral[A]: Option[A] = None()
 
       def combine[A](x: Option[A], y: Option[A]): Option[A] = x orElse y
 
@@ -23,7 +25,7 @@ trait OptionInstances extends OptionInstances1 {
         fa.flatMap(a => fb.map(b => f(a, b)))
 
       def coflatMap[A, B](fa: Option[A])(f: Option[A] => B): Option[B] =
-        if (fa.isDefined) Some(f(fa)) else None
+        if (fa.isDefined) Some(f(fa)) else None()
 
       def foldLeft[A, B](fa: Option[A], b: B)(f: (B, A) => B): B =
         fa match {
@@ -39,7 +41,7 @@ trait OptionInstances extends OptionInstances1 {
 
       def traverse[G[_]: Applicative, A, B](fa: Option[A])(f: A => G[B]): G[Option[B]] =
         fa match {
-          case None => Applicative[G].pure(None)
+          case None() => Applicative[G].pure(None())
           case Some(a) => Applicative[G].map(f(a))(Some(_))
         }
 
@@ -55,7 +57,7 @@ trait OptionInstances extends OptionInstances1 {
 
   implicit def optionMonoid[A](implicit ev: Semigroup[A]): Monoid[Option[A]] =
     new Monoid[Option[A]] {
-      def empty: Option[A] = None
+      def neutral: Option[A] = None()
       def combine(x: Option[A], y: Option[A]): Option[A] =
         x match {
           case None => y
@@ -64,43 +66,5 @@ trait OptionInstances extends OptionInstances1 {
             case Some(yy) => Some(ev.combine(xx,yy))
           }
         }
-    }
-
-  implicit def orderOption[A](implicit ev: Order[A]): Order[Option[A]] =
-    new Order[Option[A]] {
-      def compare(x: Option[A], y: Option[A]): Int =
-        x match {
-          case Some(a) =>
-            y match {
-              case Some(b) => ev.compare(a, b)
-              case None => 1
-            }
-          case None =>
-            if (y.isDefined) -1 else 0
-        }
-    }
-
-  implicit def showOption[A](implicit A: Show[A]): Show[Option[A]] =
-    new Show[Option[A]] {
-      def show(fa: Option[A]): String = fa match {
-        case Some(a) => s"Some(${A.show(a)})"
-        case None => "None"
-      }
-    }
-}
-
-private[std] sealed trait OptionInstances1 extends OptionInstances2 {
-  implicit def partialOrderOption[A](implicit ev: PartialOrder[A]): PartialOrder[Option[A]] =
-    new PartialOrder[Option[A]] {
-      def partialCompare(x: Option[A], y: Option[A]): Double =
-        x.fold(if (y.isDefined) -1.0 else 0.0)(a => y.fold(1.0)(ev.partialCompare(_, a)))
-    }
-}
-
-private[std] sealed trait OptionInstances2 {
-  implicit def eqOption[A](implicit ev: Eq[A]): Eq[Option[A]] =
-    new Eq[Option[A]] {
-      def eqv(x: Option[A], y: Option[A]): Boolean =
-        x.fold(y == None)(a => y.fold(false)(ev.eqv(_, a)))
     }
 }

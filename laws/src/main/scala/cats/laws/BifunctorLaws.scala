@@ -1,5 +1,7 @@
 package cats.laws
 
+import dogs.Predef._
+
 import cats.functor.Bifunctor
 import cats.syntax.bifunctor._
 

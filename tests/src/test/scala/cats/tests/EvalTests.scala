@@ -1,6 +1,9 @@
 package cats
 package tests
 
+import dogs._
+import dogs.Predef._
+import dogs.std._
 import scala.math.min
 import cats.laws.discipline.{MonoidalTests, BimonadTests, SerializableTests}
 import cats.laws.discipline.arbitrary._

@@ -1,6 +1,8 @@
 package cats
 package laws
 
+import dogs.Predef._
+
 import cats.functor.Profunctor
 import cats.syntax.profunctor._
 

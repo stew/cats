@@ -1,9 +1,11 @@
 package cats
 package tests
 
+import dogs.Predef._
+import dogs.std._
+import cats.laws.discipline.eq._
 import cats.functor.Invariant
 import cats.laws.discipline.{InvariantTests, SerializableTests}
-import cats.laws.discipline.eq._
 
 import org.scalacheck.{Arbitrary, Gen}
 

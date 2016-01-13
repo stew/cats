@@ -1,7 +1,11 @@
 package cats
 package std
 
-trait StringInstances extends algebra.std.StringInstances {
-  implicit val stringShow: Show[String] =
-    Show.fromToString[String]
+import dogs.Predef._
+
+trait StringInstances {
+  implicit def stringMonoid: Monoid[String] = new Monoid[String] {
+    override def neutral: String = ""
+    override def combine(l: String, r: String): String = l + r
+  }
 }

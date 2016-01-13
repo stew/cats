@@ -1,6 +1,8 @@
 package cats
 package functor
 
+import dogs.Predef._
+
 /**
  * A [[Profunctor]] is a [[Contravariant]] functor on its first type parameter
  * and a [[Functor]] on its second type parameter.

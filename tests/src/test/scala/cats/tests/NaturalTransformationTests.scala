@@ -1,6 +1,9 @@
 package cats
 package tests
 
+import dogs._
+import dogs.Predef._
+import dogs.std._
 import cats.arrow.NaturalTransformation
 import cats.data.Coproduct
 

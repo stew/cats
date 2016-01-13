@@ -1,16 +1,16 @@
 package cats
 package tests
 
-import algebra.laws.{GroupLaws, OrderLaws}
-
-import cats.data.{Const, NonEmptyList}
+import dogs.Predef._
+import dogs._
+import dogs.tests.arbitrary.all._
 import cats.functor.Contravariant
+import cats.std.const._
 import cats.laws.discipline._
-import cats.laws.discipline.arbitrary.{constArbitrary, oneAndArbitrary}
 
 class ConstTests extends CatsSuite {
 
-  implicit val iso = MonoidalTests.Isomorphisms.invariant[Const[String, ?]](Const.constTraverse)
+  implicit val iso = MonoidalTests.Isomorphisms.invariant[Const[String, ?]](constTraverse)
 
   checkAll("Const[String, Int]", MonoidalTests[Const[String, ?]].monoidal[Int, Int, Int])
   checkAll("Monoidal[Const[String, ?]]", SerializableTests.serializable(Monoidal[Const[String, ?]]))
@@ -23,16 +23,16 @@ class ConstTests extends CatsSuite {
 
   // Get Apply[Const[C : Semigroup, ?]], not Applicative[Const[C : Monoid, ?]]
   {
-    implicit def nonEmptyListSemigroup[A]: Semigroup[NonEmptyList[A]] = SemigroupK[NonEmptyList].algebra
-    implicit val iso = MonoidalTests.Isomorphisms.invariant[Const[NonEmptyList[String], ?]](Const.constContravariant)
-    checkAll("Apply[Const[NonEmptyList[String], Int]]", ApplyTests[Const[NonEmptyList[String], ?]].apply[Int, Int, Int])
-    checkAll("Apply[Const[NonEmptyList[String], ?]]", SerializableTests.serializable(Apply[Const[NonEmptyList[String], ?]]))
+    implicit def nonEmptyListSemigroup[A]: Semigroup[Nel[A]] = SemigroupK[Nel].algebra
+    implicit val iso = MonoidalTests.Isomorphisms.invariant[Const[Nel[String], ?]](Const.constContravariant)
+    checkAll("Apply[Const[Nel[String], Int]]", ApplyTests[Const[Nel[String], ?]].apply[Int, Int, Int])
+    checkAll("Apply[Const[Nel[String], ?]]", SerializableTests.serializable(Apply[Const[Nel[String], ?]]))
   }
 
   // Algebra checks for Serializability of instances as part of the laws
   checkAll("Monoid[Const[Int, String]]", GroupLaws[Const[Int, String]].monoid)
 
-  checkAll("Const[NonEmptyList[Int], String]", GroupLaws[Const[NonEmptyList[Int], String]].semigroup)
+  checkAll("Const[Nel[Int], String]", GroupLaws[Const[Nel[Int], String]].semigroup)
 
   // Note while Eq is a superclass of PartialOrder and PartialOrder a superclass
   // of Order, you can get different instances with different (more general) constraints.

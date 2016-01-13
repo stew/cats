@@ -1,6 +1,9 @@
 package cats
 package tests
 
+import dogs._
+import dogs.Predef._
+import dogs.std._
 import cats.data.Prod
 import cats.laws.discipline._
 import cats.laws.discipline.arbitrary._

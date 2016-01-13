@@ -2,6 +2,8 @@ package cats
 package laws
 package discipline
 
+import dogs.Predef._
+import scala.{Some,None}
 import cats.arrow.Category
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop

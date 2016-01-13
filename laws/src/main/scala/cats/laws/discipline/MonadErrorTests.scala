@@ -2,10 +2,13 @@ package cats
 package laws
 package discipline
 
-import cats.data.{ Xor, XorT }
+import scala.Nil
+import dogs._
+import dogs.Predef._
+import cats.data.XorT
 import cats.laws.discipline.MonoidalTests.Isomorphisms
-import cats.laws.discipline.arbitrary._
 import cats.laws.discipline.eq.unitEq
+import scala.collection.immutable.Seq
 import org.scalacheck.{Arbitrary, Prop}
 import org.scalacheck.Prop.forAll
 
@@ -30,6 +33,8 @@ trait MonadErrorTests[F[_], E] extends MonadTests[F] {
     iso: Isomorphisms[F]
   ): RuleSet = {
     new RuleSet {
+      import cats.laws.discipline.arbitrary._
+      import dogs.tests.arbitrary.all._
       def name: String = "monadError"
       def bases: Seq[(String, RuleSet)] = Nil
       def parents: Seq[RuleSet] = Seq(monad[A, B, C])

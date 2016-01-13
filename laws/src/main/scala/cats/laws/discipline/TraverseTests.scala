@@ -2,6 +2,9 @@ package cats
 package laws
 package discipline
 
+import dogs.Predef._
+import scala.Nil
+import scala.collection.immutable.Seq
 import org.scalacheck.{Prop, Arbitrary}
 import Prop._
 

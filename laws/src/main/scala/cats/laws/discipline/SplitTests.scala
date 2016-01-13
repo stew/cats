@@ -2,6 +2,8 @@ package cats
 package laws
 package discipline
 
+import dogs.Predef._
+import scala.Some
 import cats.arrow.Split
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop

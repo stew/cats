@@ -1,6 +1,7 @@
 package cats
 package free
 
+import scala.Function0
 import cats.std.function.function0Instance
 
 // To workaround SI-7139 `object Trampoline` needs to be defined inside the package object

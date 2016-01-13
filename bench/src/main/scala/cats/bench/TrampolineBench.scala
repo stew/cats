@@ -2,7 +2,8 @@ package cats.bench
 
 import org.openjdk.jmh.annotations.{Benchmark, Scope, State}
 
-import cats._
+import dogs.Predef._
+import dogs._
 import cats.implicits._
 import cats.free.Trampoline
 

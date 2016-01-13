@@ -21,6 +21,8 @@ trait Arrow[F[_, _]] extends Split[F] with Strong[F] with Category[F] { self =>
    *
    * Example:
    * {{{
+   * scala> import dogs.Predef._
+   * scala> import dogs._
    * scala> import cats.std.function._
    * scala> val toLong: Int => Long = _.toLong
    * scala> val toDouble: Float => Double = _.toDouble

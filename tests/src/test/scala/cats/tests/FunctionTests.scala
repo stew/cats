@@ -1,14 +1,17 @@
 package cats
 package tests
 
+import dogs._
+import dogs.Predef._
+import dogs.std._
 import org.scalacheck.Arbitrary
 
+import dogs.Predef._
 import cats.arrow.{Arrow, Choice}
 import cats.functor.Contravariant
 import cats.laws.discipline._
 import cats.laws.discipline.eq._
 import cats.laws.discipline.arbitrary._
-import algebra.laws.GroupLaws
 
 class FunctionTests extends CatsSuite {
 

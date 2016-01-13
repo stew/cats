@@ -1,6 +1,8 @@
 package cats
 package free
 
+import dogs.Predef._
+
 /**
  * The dual view of the Yoneda lemma. Also a free functor on `F`.
  * This is isomorphic to `F` as long as `F` itself is a functor.

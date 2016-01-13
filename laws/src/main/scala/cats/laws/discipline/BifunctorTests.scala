@@ -1,6 +1,8 @@
 package cats.laws.discipline
 
-import cats.Eq
+import dogs.Predef._
+import dogs.Eq
+import scala.None
 import cats.functor.Bifunctor
 import cats.laws.BifunctorLaws
 import org.scalacheck.Arbitrary

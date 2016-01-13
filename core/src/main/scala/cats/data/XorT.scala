@@ -1,6 +1,10 @@
 package cats
 package data
 
+import dogs._
+import dogs.Predef._
+import cats.std.show._
+import cats.std.xor._
 import cats.functor.Bifunctor
 
 /**
@@ -51,15 +55,13 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
 
   def exists(f: B => Boolean)(implicit F: Functor[F]): F[Boolean] = F.map(value)(_.exists(f))
 
-  def toEither(implicit F: Functor[F]): F[Either[A, B]] = F.map(value)(_.toEither)
-
   def toOption(implicit F: Functor[F]): OptionT[F, B] = OptionT(F.map(value)(_.toOption))
 
   def to[G[_]](implicit functorF: Functor[F], monoidKG: MonoidK[G], applicativeG: Applicative[G]): F[G[B]] =
-    functorF.map(value)(_.to[G, B])
+    functorF.map(value)(XorT.xorto[G,A,B](_))
 
   def collectRight(implicit F: MonadCombine[F]): F[B] =
-    F.flatMap(value)(_.to[F, B])
+    F.flatMap(value)(XorT.xorto[F, A, B](_))
 
   def bimap[C, D](fa: A => C, fb: B => D)(implicit F: Functor[F]): XorT[F, C, D] = XorT(F.map(value)(_.bimap(fa, fb)))
 
@@ -85,12 +87,13 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
 
   def leftMap[C](f: A => C)(implicit F: Functor[F]): XorT[F, C, B] = bimap(f, identity)
 
+/*
   def compare(that: XorT[F, A, B])(implicit o: Order[F[A Xor B]]): Int =
     o.compare(value, that.value)
 
   def partialCompare(that: XorT[F, A, B])(implicit p: PartialOrder[F[A Xor B]]): Double =
     p.partialCompare(value, that.value)
-
+ */
   def ===(that: XorT[F, A, B])(implicit eq: Eq[F[A Xor B]]): Boolean =
     eq.eqv(value, that.value)
 
@@ -106,7 +109,7 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
   def merge[AA >: A](implicit ev: B <:< AA, F: Functor[F]): F[AA] = F.map(value)(_.fold(identity, ev.apply))
 
   def combine(that: XorT[F, A, B])(implicit F: Apply[F], A: Semigroup[A], B: Semigroup[B]): XorT[F, A, B] =
-    XorT(F.map2(this.value, that.value)(_ combine _))
+    XorT(F.map2(this.value, that.value)(Semigroup[A Xor B].combine))
 
   def toValidated(implicit F: Functor[F]): F[Validated[A, B]] =
     F.map(value)(_.toValidated)
@@ -118,6 +121,8 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
    *
    * Example:
    * {{{
+   * scala> import dogs.Predef._
+   * scala> import dogs._
    * scala> import cats.std.option._
    * scala> import cats.std.list._
    * scala> import cats.syntax.monoidal._
@@ -149,6 +154,8 @@ trait XorTFunctions {
    * Note: The return type is a FromXorPartiallyApplied[F], which has an apply method
    * on it, allowing you to call fromXor like this:
    * {{{
+   * scala> import dogs.Predef._
+   * scala> import dogs._
    * scala> import cats.std.option._
    * scala> val t: Xor[String, Int] = Xor.right(3)
    * scala> XorT.fromXor[Option](t)
@@ -163,6 +170,11 @@ trait XorTFunctions {
     def apply[E, A](xor: Xor[E, A])(implicit F: Applicative[F]): XorT[F, E, A] =
       XorT(F.pure(xor))
   }
+
+  def xorto[F[_], A, B](aorb: Xor[A,B])(implicit monoidKF: MonoidK[F], applicativeF: Applicative[F]): F[B] =
+    aorb.fold(_ => monoidKF.neutral, applicativeF.pure)
+
+
 }
 
 private[data] abstract class XorTInstances extends XorTInstances1 {
@@ -175,11 +187,12 @@ private[data] abstract class XorTInstances extends XorTInstances1 {
   }
   */
 
+/*
   implicit def xorTOrder[F[_], L, R](implicit F: Order[F[L Xor R]]): Order[XorT[F, L, R]] =
     new XorTOrder[F, L, R] {
       val F0: Order[F[L Xor R]] = F
     }
-
+ */
   implicit def xorTShow[F[_], L, R](implicit sh: Show[F[L Xor R]]): Show[XorT[F, L, R]] =
     functor.Contravariant[Show].contramap(sh)(_.value)
 
@@ -210,7 +223,7 @@ private[data] abstract class XorTInstances1 extends XorTInstances2 {
     implicit val L0 = L
     new MonoidK[XorT[F, L, ?]] with XorTSemigroupK[F, L] {
       implicit val F = F0; implicit val L = L0
-      def empty[A]: XorT[F, L, A] = XorT.left(F.pure(L.empty))(F)
+      def neutral[A]: XorT[F, L, A] = XorT.left(F.pure(L.neutral))(F)
     }
   }
 
@@ -219,10 +232,11 @@ private[data] abstract class XorTInstances1 extends XorTInstances2 {
       val F0: Foldable[F] = F
     }
 
-  implicit def xorTPartialOrder[F[_], L, R](implicit F: PartialOrder[F[L Xor R]]): PartialOrder[XorT[F, L, R]] =
+/*  implicit def xorTPartialOrder[F[_], L, R](implicit F: PartialOrder[F[L Xor R]]): PartialOrder[XorT[F, L, R]] =
     new XorTPartialOrder[F, L, R] {
       val F0: PartialOrder[F[L Xor R]] = F
     }
+ */
 }
 
 private[data] abstract class XorTInstances2 extends XorTInstances3 {
@@ -293,7 +307,7 @@ private[data] trait XorTSemigroupK[F[_], L] extends SemigroupK[XorT[F, L, ?]] {
 private[data] trait XorTMonadFilter[F[_], L] extends MonadFilter[XorT[F, L, ?]] with XorTMonadError[F, L] {
   implicit val F: Monad[F]
   implicit val L: Monoid[L]
-  def empty[A]: XorT[F, L, A] = XorT(F.pure(Xor.left(L.empty)))
+  def neutral[A]: XorT[F, L, A] = XorT(F.pure(Xor.left(L.neutral)))
 }
 
 /* TODO violates right absorbtion, right distributivity, and left distributivity -- re-enable when MonadCombine laws are split in to weak/strong
@@ -326,7 +340,7 @@ private[data] sealed trait XorTEq[F[_], L, A] extends Eq[XorT[F, L, A]] {
   override def eqv(x: XorT[F, L, A], y: XorT[F, L, A]): Boolean = x === y
 }
 
-private[data] sealed trait XorTPartialOrder[F[_], L, A] extends PartialOrder[XorT[F, L, A]] with XorTEq[F, L, A]{
+/*private[data] sealed trait XorTPartialOrder[F[_], L, A] extends PartialOrder[XorT[F, L, A]] with XorTEq[F, L, A]{
   override implicit def F0: PartialOrder[F[L Xor A]]
 
   override def partialCompare(x: XorT[F, L, A], y: XorT[F, L, A]): Double =
@@ -338,3 +352,4 @@ private[data] sealed trait XorTOrder[F[_], L, A] extends Order[XorT[F, L, A]] wi
 
   override def compare(x: XorT[F, L, A], y: XorT[F, L, A]): Int = x compare y
 }
+ */

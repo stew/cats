@@ -1,5 +1,6 @@
 package cats
 
+import dogs.Predef._
 import simulacrum.{op, typeclass}
 
 /**

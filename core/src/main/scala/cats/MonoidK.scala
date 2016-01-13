@@ -27,14 +27,14 @@ import simulacrum.typeclass
   /**
    * Given a type A, create an "empty" F[A] value.
    */
-  def empty[A]: F[A]
+  def neutral[A]: F[A]
 
   /**
    * Given a type A, create a concrete Monoid[F[A]].
    */
   override def algebra[A]: Monoid[F[A]] =
     new Monoid[F[A]] {
-      def empty: F[A] = self.empty
+      def neutral: F[A] = self.neutral
       def combine(x: F[A], y: F[A]): F[A] = self.combine(x, y)
     }
 }

@@ -1,5 +1,7 @@
 package cats
 
+import dogs.Predef._
+
 /**
  * A type class that is used to help guide Scala's type inference to
  * find type class instances for types which have shapes which differ

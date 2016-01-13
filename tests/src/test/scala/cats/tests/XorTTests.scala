@@ -1,6 +1,9 @@
 package cats
 package tests
 
+import dogs._
+import dogs.Predef._
+import dogs.std._
 import cats.functor.Bifunctor
 import cats.data.{Xor, XorT}
 import cats.laws.discipline._

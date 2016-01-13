@@ -1,6 +1,8 @@
 package cats
 package laws
 
+import dogs.Predef._
+
 // Taken from http://functorial.com/psc-pages/docs/Control/Monad/State/Class/index.html
 trait MonadStateLaws[F[_], S] extends MonadLaws[F] {
   implicit override def F: MonadState[F, S]

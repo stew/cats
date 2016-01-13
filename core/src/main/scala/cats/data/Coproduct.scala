@@ -1,6 +1,8 @@
 package cats
 package data
 
+import dogs._
+import dogs.Predef._
 import cats.functor.Contravariant
 
 /** `F` on the left and `G` on the right of [[Xor]].
@@ -84,7 +86,7 @@ object Coproduct extends CoproductInstances {
 private[data] sealed abstract class CoproductInstances3 {
 
   implicit def coproductEq[F[_], G[_], A](implicit E: Eq[F[A] Xor G[A]]): Eq[Coproduct[F, G, A]] =
-    Eq.by(_.run)
+    E.contramap(_.run)
 
   implicit def coproductFunctor[F[_], G[_]](implicit F0: Functor[F], G0: Functor[G]): Functor[Coproduct[F, G, ?]] =
     new CoproductFunctor[F, G] {

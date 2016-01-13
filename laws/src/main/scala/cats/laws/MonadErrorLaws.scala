@@ -1,7 +1,10 @@
 package cats
 package laws
 
-import cats.data.{Xor, XorT}
+import dogs.Predef._
+import dogs.Xor
+import cats.data.XorT
+import scala.PartialFunction
 
 // Taken from http://functorial.com/psc-pages/docs/Control/Monad/Error/Class/index.html
 trait MonadErrorLaws[F[_], E] extends MonadLaws[F] {

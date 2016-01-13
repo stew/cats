@@ -1,6 +1,9 @@
 package cats
 package tests
 
+import dogs._
+import dogs.Predef._
+import dogs.std._
 import cats.std.AllInstances
 import cats.syntax.AllSyntax
 import algebra.laws.GroupLaws

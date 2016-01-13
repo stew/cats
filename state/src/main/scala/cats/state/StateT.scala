@@ -1,6 +1,7 @@
 package cats
 package state
 
+import dogs.Predef._
 import cats.free.Trampoline
 import cats.data.Kleisli
 import cats.std.function.function0Instance
@@ -45,19 +46,19 @@ final class StateT[F[_], S, A](val runF: F[S => F[(S, A)]]) extends Serializable
   /**
    * Run with `S`'s empty monoid value as the initial state.
    */
-  def runEmpty(implicit S: Monoid[S], F: FlatMap[F]): F[(S, A)] = run(S.empty)
+  def runEmpty(implicit S: Monoid[S], F: FlatMap[F]): F[(S, A)] = run(S.neutral)
 
   /**
    * Run with `S`'s empty monoid value as the initial state and return the final
    * state (discarding the final value).
    */
-  def runEmptyS(implicit S: Monoid[S], F: FlatMap[F]): F[S] = runS(S.empty)
+  def runEmptyS(implicit S: Monoid[S], F: FlatMap[F]): F[S] = runS(S.neutral)
 
   /**
    * Run with `S`'s empty monoid value as the initial state and return the final
    * state (discarding the final value).
    */
-  def runEmptyA(implicit S: Monoid[S], F: FlatMap[F]): F[A] = runA(S.empty)
+  def runEmptyA(implicit S: Monoid[S], F: FlatMap[F]): F[A] = runA(S.neutral)
 
   /**
    * Like [[map]], but also allows the state (`S`) value to be modified.

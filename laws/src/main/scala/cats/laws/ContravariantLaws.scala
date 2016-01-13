@@ -1,6 +1,7 @@
 package cats
 package laws
 
+import dogs.Predef._
 import cats.functor.Contravariant
 import cats.syntax.contravariant._
 

@@ -1,6 +1,8 @@
 package cats
 package data
 
+import dogs._
+import dogs.Predef._
 import cats.arrow.{Arrow, Choice, Split}
 import cats.functor.{Contravariant, Strong}
 
@@ -249,7 +251,7 @@ private trait KleisliSemigroup[F[_], A, B] extends Semigroup[Kleisli[F, A, B]] {
 private trait KleisliMonoid[F[_], A, B] extends Monoid[Kleisli[F, A, B]] with KleisliSemigroup[F, A, B] {
   implicit def FB: Monoid[F[B]]
 
-  override def empty = Kleisli[F, A, B](a => FB.empty)
+  override def neutral = Kleisli[F, A, B](a => FB.neutral)
 }
 
 private trait KleisliSemigroupK[F[_]] extends SemigroupK[Lambda[A => Kleisli[F, A, A]]] {
@@ -261,5 +263,5 @@ private trait KleisliSemigroupK[F[_]] extends SemigroupK[Lambda[A => Kleisli[F, 
 private trait KleisliMonoidK[F[_]] extends MonoidK[Lambda[A => Kleisli[F, A, A]]] with KleisliSemigroupK[F] {
   implicit def F: Monad[F]
 
-  override def empty[A]: Kleisli[F, A, A] = Kleisli(F.pure[A])
+  override def neutral[A]: Kleisli[F, A, A] = Kleisli(F.pure[A])
 }

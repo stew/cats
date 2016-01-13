@@ -1,6 +1,8 @@
 package cats
 package laws
 
+import dogs.Predef._
+import dogs._
 import cats.implicits._
 
 trait FoldableLaws[F[_]] {
@@ -12,7 +14,7 @@ trait FoldableLaws[F[_]] {
   )(implicit
     M: Monoid[B]
   ): IsEq[B] = {
-    fa.foldMap(f) <-> fa.foldLeft(M.empty) { (b, a) => b |+| f(a) }
+    fa.foldMap(f) <-> fa.foldLeft(M.neutral) { (b, a) => b |+| f(a) }
   }
 
   def rightFoldConsistentWithFoldMap[A, B](
@@ -21,7 +23,7 @@ trait FoldableLaws[F[_]] {
   )(implicit
     M: Monoid[B]
   ): IsEq[B] = {
-    fa.foldMap(f) <-> fa.foldRight(Later(M.empty))((a, lb) => lb.map(f(a) |+| _)).value
+    fa.foldMap(f) <-> fa.foldRight(Later(M.neutral))((a, lb) => lb.map(f(a) |+| _)).value
   }
 
   def existsConsistentWithFind[A](

@@ -1,5 +1,7 @@
 package cats
 
+import scala.Function0
+
 package object free {
   /** Alias for the free monad over the `Function0` functor. */
   type Trampoline[A] = Free[Function0, A]

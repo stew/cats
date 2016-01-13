@@ -1,6 +1,7 @@
 package cats
 package laws
 
+import dogs.Predef._
 import cats.functor.Invariant
 import cats.syntax.invariant._
 

@@ -7,11 +7,11 @@ package object std {
   object function extends FunctionInstances
 
   object list       extends ListInstances
+  object nel        extends NelInstances
   object option     extends OptionInstances
-  object set        extends SetInstances
-  object stream     extends StreamInstances
-  object vector     extends VectorInstances
-  object map        extends MapInstances
+//  object set        extends SetInstances
+//  object stream     extends StreamInstances
+//  object vector     extends VectorInstances
   object future     extends FutureInstances
 
   object string     extends StringInstances
@@ -27,4 +27,8 @@ package object std {
 
   object bigInt     extends BigIntInstances
   object bigDecimal extends BigDecimalInstances
+
+  object const extends ConstInstances
+  object show extends ShowInstances
+  object xor extends XorInstances
 }

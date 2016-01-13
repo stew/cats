@@ -1,6 +1,9 @@
 package cats
 package tests
 
+import dogs._
+import dogs.Predef._
+import dogs.std._
 import cats.data.{Writer, WriterT}
 import cats.functor.Bifunctor
 import cats.laws.discipline._

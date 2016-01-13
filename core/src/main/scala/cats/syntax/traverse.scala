@@ -1,6 +1,8 @@
 package cats
 package syntax
 
+import dogs.Predef._
+
 trait TraverseSyntax1 {
   implicit def traverseSyntaxU[FA](fa: FA)(implicit U: Unapply[Traverse,FA]): TraverseOps[U.M, U.A] =
     new TraverseOps(U.subst(fa))(U.TC)

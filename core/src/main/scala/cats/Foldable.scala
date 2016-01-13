@@ -1,6 +1,7 @@
 package cats
 
-import cats.data.Streaming
+import dogs._
+import dogs.Predef._
 
 import scala.collection.mutable
 import simulacrum.typeclass
@@ -45,13 +46,13 @@ import simulacrum.typeclass
   def foldRight[A, B](fa: F[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B]
 
   def reduceLeftToOption[A, B](fa: F[A])(f: A => B)(g: (B, A) => B): Option[B] =
-    foldLeft(fa, Option.empty[B]) {
+    foldLeft(fa, Option.none[B]) {
       case (Some(b), a) => Some(g(b, a))
-      case (None, a) => Some(f(a))
+      case (None(), a) => Some(f(a))
     }
 
   def reduceRightToOption[A, B](fa: F[A])(f: A => B)(g: (A, Eval[B]) => Eval[B]): Eval[Option[B]] =
-    foldRight(fa, Now(Option.empty[B])) { (a, lb) =>
+    foldRight(fa, Now(Option.none[B])) { (a, lb) =>
       lb.flatMap {
         case Some(b) => g(a, Now(b)).map(Some(_))
         case None => Later(Some(f(a)))
@@ -62,7 +63,7 @@ import simulacrum.typeclass
    * Fold implemented using the given Monoid[A] instance.
    */
   def fold[A](fa: F[A])(implicit A: Monoid[A]): A =
-    foldLeft(fa, A.empty) { (acc, a) =>
+    foldLeft(fa, A.neutral) { (acc, a) =>
       A.combine(acc, a)
     }
 
@@ -76,7 +77,7 @@ import simulacrum.typeclass
    * combining them using the given `Monoid[B]` instance.
    */
   def foldMap[A, B](fa: F[A])(f: A => B)(implicit B: Monoid[B]): B =
-    foldLeft(fa, B.empty)((b, a) => B.combine(b, f(a)))
+    foldLeft(fa, B.neutral)((b, a) => B.combine(b, f(a)))
 
   /**
    * Traverse `F[A]` using `Applicative[G]`.
@@ -87,7 +88,8 @@ import simulacrum.typeclass
    * For example:
    *
    * {{{
-   * scala> import cats.data.Xor
+   * scala> import dogs.Predef._
+   * scala> import dogs._
    * scala> import cats.std.list._
    * scala> import cats.std.option._
    * scala> def parseInt(s: String): Option[Int] = Xor.catchOnly[NumberFormatException](s.toInt).toOption
@@ -116,6 +118,8 @@ import simulacrum.typeclass
    * For example:
    *
    * {{{
+   * scala> import dogs.Predef._
+   * scala> import dogs._
    * scala> import cats.std.list._
    * scala> import cats.std.option._
    * scala> val F = Foldable[List]
@@ -137,9 +141,11 @@ import simulacrum.typeclass
    * For example:
    *
    * {{{
+   * scala> import dogs.Predef._
+   * scala> import dogs._
    * scala> import cats.std.list._
    * scala> val F = Foldable[List]
-   * scala> F.foldK(List(1 :: 2 :: Nil, 3 :: 4 :: 5 :: Nil))
+   * scala> F.foldK(List(1 :: 2 :: El(), 3 :: 4 :: 5 :: El()))
    * res0: List[Int] = List(1, 2, 3, 4, 5)
    * }}}
    */
@@ -151,7 +157,7 @@ import simulacrum.typeclass
    * Find the first element matching the predicate, if one exists.
    */
   def find[A](fa: F[A])(f: A => Boolean): Option[A] =
-    foldRight(fa, Now(Option.empty[A])) { (a, lb) =>
+    foldRight(fa, Now(Option.none[A])) { (a, lb) =>
       if (f(a)) Now(Some(a)) else lb
     }.value
 
@@ -179,7 +185,7 @@ import simulacrum.typeclass
    * Convert F[A] to a List[A].
    */
   def toList[A](fa: F[A]): List[A] =
-    foldLeft(fa, mutable.ListBuffer.empty[A]) { (buf, a) =>
+    foldLeft(fa, new ListBuilder[A]) { (buf, a) =>
       buf += a
     }.toList
 
@@ -187,7 +193,7 @@ import simulacrum.typeclass
    * Convert F[A] to a List[A], only including elements which match `p`.
    */
   def filter_[A](fa: F[A])(p: A => Boolean): List[A] =
-    foldLeft(fa, mutable.ListBuffer.empty[A]) { (buf, a) =>
+    foldLeft(fa, new ListBuilder[A]) { (buf, a) =>
       if (p(a)) buf += a else buf
     }.toList
 
@@ -197,7 +203,7 @@ import simulacrum.typeclass
    */
   def takeWhile_[A](fa: F[A])(p: A => Boolean): List[A] =
     foldRight(fa, Now(List.empty[A])) { (a, llst) =>
-      if (p(a)) llst.map(a :: _) else Now(Nil)
+      if (p(a)) llst.map(Nel(a,_)) else Now(El())
     }.value
 
   /**
@@ -205,7 +211,7 @@ import simulacrum.typeclass
    * match `p`.
    */
   def dropWhile_[A](fa: F[A])(p: A => Boolean): List[A] =
-    foldLeft(fa, mutable.ListBuffer.empty[A]) { (buf, a) =>
+    foldLeft(fa, new ListBuilder[A]) { (buf, a) =>
       if (buf.nonEmpty || !p(a)) buf += a else buf
     }.toList
 
@@ -254,6 +260,7 @@ trait CompositeFoldable[F[_], G[_]] extends Foldable[λ[α => F[G[α]]]] {
     F.foldRight(fga, lb)((ga, lb) => G.foldRight(ga, lb)(f))
 }
 
+/*
 object Foldable {
   def iterateRight[A, B](it: Iterator[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] = {
     def loop(): Eval[B] =
@@ -261,3 +268,4 @@ object Foldable {
     loop()
   }
 }
+*/

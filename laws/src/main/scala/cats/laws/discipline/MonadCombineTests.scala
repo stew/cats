@@ -2,6 +2,9 @@ package cats
 package laws
 package discipline
 
+import scala.collection.immutable.Seq
+import scala.Nil
+import dogs.Predef._
 import cats.laws.discipline.MonoidalTests.Isomorphisms
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop

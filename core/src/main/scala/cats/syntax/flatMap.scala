@@ -1,6 +1,10 @@
 package cats
 package syntax
 
+import dogs._
+import dogs.Predef._
+import scala.inline
+
 trait FlatMapSyntax1 {
   implicit def flatMapSyntaxU[FA](fa: FA)(implicit U: Unapply[FlatMap, FA]): FlatMapOps[U.M, U.A] =
     new FlatMapOps[U.M, U.A](U.subst(fa))(U.TC)
@@ -34,7 +38,8 @@ final class FlatMapOps[F[_], A](fa: F[A])(implicit F: FlatMap[F]) {
    * you can evaluate it only ''after'' the first action has finished:
    *
    * {{{
-   * scala> import cats.Eval
+   * scala> import dogs.Predef._
+   * scala> import dogs._
    * scala> import cats.std.option._
    * scala> import cats.syntax.flatMap._
    * scala> val fa: Option[Int] = Some(3)

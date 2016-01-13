@@ -2,7 +2,10 @@ package cats
 package laws
 package discipline
 
-import algebra.Eq
+import dogs.Predef._
+import dogs._
+import scala.{Function,None,Some,sys}
+import scala.{Some,None,Option}
 import org.scalacheck.Arbitrary
 
 object eq {
@@ -13,10 +16,7 @@ object eq {
    */
   implicit def function1Eq[A, B](implicit A: Arbitrary[A], B: Eq[B]): Eq[A => B] = new Eq[A => B] {
     def eqv(f: A => B, g: A => B): Boolean = {
-      val samples = List.fill(100)(A.arbitrary.sample).collect{
-        case Some(a) => a
-        case None => sys.error("Could not generate arbitrary values to compare two functions")
-      }
+      val samples = List.fill(100)(A.arbitrary.sample).map(_.fold[A](sys.error("Could not generate arbitrary values to compare two functions"))(identity))
       samples.forall(s => B.eqv(f(s), g(s)) )
     }
   }
@@ -38,13 +38,13 @@ object eq {
    * and comparing the application of the two combine functions.
    */
   implicit def semigroupEq[A](implicit arbAA: Arbitrary[(A, A)], eqA: Eq[A]): Eq[Semigroup[A]] =
-    function1Eq[(A, A), A].on(f =>
+    function1Eq[(A, A), A].contramap(f =>
       Function.tupled((x, y) => f.combine(x, y))
     )
 
   implicit def monoidEq[A](implicit eqSA: Eq[Semigroup[A]], eqA: Eq[A]): Eq[Monoid[A]] = new Eq[Monoid[A]] {
     def eqv(f: Monoid[A], g: Monoid[A]): Boolean = {
-      eqSA.eqv(f, g) && eqA.eqv(f.empty, g.empty)
+      eqSA.eqv(f, g) && eqA.eqv(f.neutral, g.neutral)
     }
   }
 

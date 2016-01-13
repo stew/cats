@@ -1,9 +1,9 @@
 package cats
 package free
 
+import dogs.Xor, Xor.{Left, Right}
+import dogs.Predef._
 import scala.annotation.tailrec
-
-import cats.data.Xor, Xor.{Left, Right}
 import cats.arrow.NaturalTransformation
 
 object Free {

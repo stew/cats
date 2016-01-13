@@ -17,10 +17,11 @@ lazy val buildSettings = Seq(
   scalaVersion := "2.11.7",
   crossScalaVersions := Seq("2.10.5", "2.11.7")
 )
-
+/* STEW TODO
 lazy val catsDoctestSettings = Seq(
   doctestWithDependencies := false
 ) ++ doctestSettings
+ */
 
 lazy val commonSettings = Seq(
   scalacOptions ++= commonScalacOptions,
@@ -31,8 +32,8 @@ lazy val commonSettings = Seq(
   ),
   libraryDependencies ++= Seq(
     "com.github.mpilquist" %%% "simulacrum" % "0.5.0",
-    "org.spire-math" %%% "algebra" % "0.3.1",
-    "org.spire-math" %%% "algebra-std" % "0.3.1",
+//    "org.spire-math" %%% "algebra" % "0.3.1",
+//    "org.spire-math" %%% "algebra-std" % "0.3.1",
     "org.typelevel" %%% "machinist" % "0.4.1",
     compilerPlugin("org.scalamacros" %% "paradise" % "2.1.0-M5" cross CrossVersion.full),
     compilerPlugin("org.spire-math" %% "kind-projector" % "0.6.3")
@@ -49,7 +50,7 @@ lazy val commonJvmSettings = Seq(
   testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oDF")
 // currently sbt-doctest doesn't work in JS builds, so this has to go in the
 // JVM settings. https://github.com/tkawachi/sbt-doctest/issues/52
-) ++ catsDoctestSettings
+) //STEW TODO ++ catsDoctestSettings
 
 lazy val catsSettings = buildSettings ++ commonSettings ++ publishSettings ++ scoverageSettings
 
@@ -130,7 +131,9 @@ lazy val core = crossProject.crossType(CrossType.Pure)
   .settings(
     sourceGenerators in Compile <+= (sourceManaged in Compile).map(Boilerplate.gen)
   )
-  .settings(libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test")
+  .settings(libraryDependencies ++= Seq(
+              "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
+              "org.typelevel" %% "dogs-core" % "0.2.0-SNAPSHOT"))
   .jsSettings(commonJsSettings:_*)
   .jvmSettings(commonJvmSettings:_*)
 
@@ -143,7 +146,8 @@ lazy val laws = crossProject.crossType(CrossType.Pure)
   .settings(catsSettings:_*)
   .settings(disciplineDependencies:_*)
   .settings(libraryDependencies ++= Seq(
-    "org.spire-math" %%% "algebra-laws" % "0.3.1",
+//    "org.spire-math" %%% "algebra-laws" % "0.3.1",
+    "org.typelevel" %% "dogs-tests" % "0.2.0-SNAPSHOT",
     "org.typelevel" %%% "catalysts-platform" % "0.0.2"))
   .jsSettings(commonJsSettings:_*)
   .jvmSettings(commonJvmSettings:_*)
@@ -179,6 +183,7 @@ lazy val tests = crossProject.crossType(CrossType.Pure)
   .settings(noPublishSettings:_*)
   .settings(libraryDependencies ++= Seq(
     "org.scalatest" %%% "scalatest" % "3.0.0-M7" % "test",
+    "org.typelevel" %% "dogs-tests" % "0.2.0-SNAPSHOT" % "test",
     "org.typelevel" %%% "catalysts-platform" % "0.0.2" % "test"))
   .jsSettings(commonJsSettings:_*)
   .jvmSettings(commonJvmSettings:_*)
@@ -290,7 +295,9 @@ lazy val commonScalacOptions = Seq(
   "-Ywarn-dead-code",
   "-Ywarn-numeric-widen",
   "-Ywarn-value-discard",
-  "-Xfuture"
+  "-Xfuture",
+  "-Yno-predef",
+  "-Yno-imports"
 )
 
 lazy val sharedPublishSettings = Seq(

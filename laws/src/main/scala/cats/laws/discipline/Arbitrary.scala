@@ -2,6 +2,11 @@ package cats
 package laws
 package discipline
 
+import dogs._
+import dogs.Predef._
+import scala.MatchError
+import scala.{Function,Nil}
+import scala.collection.immutable.Seq
 import cats.data._
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Arbitrary.{arbitrary => getArbitrary}
@@ -11,23 +16,8 @@ import org.scalacheck.Arbitrary.{arbitrary => getArbitrary}
  */
 object arbitrary extends ArbitraryInstances0 {
 
-  implicit def constArbitrary[A, B](implicit A: Arbitrary[A]): Arbitrary[Const[A, B]] =
-    Arbitrary(A.arbitrary.map(Const[A, B]))
-
-  implicit def oneAndArbitrary[F[_], A](implicit A: Arbitrary[A], F: Arbitrary[F[A]]): Arbitrary[OneAnd[F, A]] =
-    Arbitrary(F.arbitrary.flatMap(fa => A.arbitrary.map(a => OneAnd(a, fa))))
-
-  implicit def xorArbitrary[A, B](implicit A: Arbitrary[A], B: Arbitrary[B]): Arbitrary[A Xor B] =
-    Arbitrary(Gen.oneOf(A.arbitrary.map(Xor.left), B.arbitrary.map(Xor.right)))
-
   implicit def xorTArbitrary[F[_], A, B](implicit F: Arbitrary[F[A Xor B]]): Arbitrary[XorT[F, A, B]] =
     Arbitrary(F.arbitrary.map(XorT(_)))
-
-  implicit def validatedArbitrary[A, B](implicit A: Arbitrary[A], B: Arbitrary[B]): Arbitrary[Validated[A, B]] =
-    Arbitrary(Gen.oneOf(A.arbitrary.map(Validated.invalid), B.arbitrary.map(Validated.valid)))
-
-  implicit def iorArbitrary[A, B](implicit A: Arbitrary[A], B: Arbitrary[B]): Arbitrary[A Ior B] =
-    Arbitrary(Gen.oneOf(A.arbitrary.map(Ior.left), B.arbitrary.map(Ior.right), for { a <- A.arbitrary; b <- B.arbitrary } yield Ior.both(a, b)))
 
   implicit def kleisliArbitrary[F[_], A, B](implicit F: Arbitrary[F[B]]): Arbitrary[Kleisli[F, A, B]] =
     Arbitrary(F.arbitrary.map(fb => Kleisli[F, A, B](_ => fb)))
@@ -53,60 +43,16 @@ object arbitrary extends ArbitraryInstances0 {
   implicit def appFuncArbitrary[F[_], A, B](implicit F: Arbitrary[F[B]], FF: Applicative[F]): Arbitrary[AppFunc[F, A, B]] =
     Arbitrary(F.arbitrary.map(fb => Func.appFunc[F, A, B](_ => fb)))
 
-  def streamingGen[A:Arbitrary](maxDepth: Int): Gen[Streaming[A]] =
-    if (maxDepth <= 1)
-      Gen.const(Streaming.empty[A])
-    else {
-      // the arbitrary instance for the next layer of the stream
-      implicit val A = Arbitrary(streamingGen[A](maxDepth - 1))
-      Gen.frequency(
-        // Empty
-        1 -> Gen.const(Streaming.empty[A]),
-        // Wait
-        2 -> getArbitrary[Eval[Streaming[A]]].map(Streaming.wait(_)),
-        // Cons
-        6 -> (for {
-          a <- getArbitrary[A]
-          tail <- getArbitrary[Eval[Streaming[A]]]
-        } yield Streaming.cons(a, tail)))
-    }
-
-  implicit def streamingArbitrary[A:Arbitrary]: Arbitrary[Streaming[A]] =
-    Arbitrary(streamingGen[A](8))
-
-  def emptyStreamingTGen[F[_], A]: Gen[StreamingT[F, A]] =
-    Gen.const(StreamingT.empty[F, A])
-
-  def streamingTGen[F[_], A](maxDepth: Int)(implicit F: Monad[F], A: Arbitrary[A]): Gen[StreamingT[F, A]] = {
-    if (maxDepth <= 1)
-      emptyStreamingTGen[F, A]
-    else Gen.frequency(
-      // Empty
-      1 -> emptyStreamingTGen[F, A],
-      // Wait
-      2 -> streamingTGen[F, A](maxDepth - 1).map(s =>
-        StreamingT.wait(F.pure(s))),
-      // Cons
-      6 -> (for {
-        a <- A.arbitrary
-        s <- streamingTGen[F, A](maxDepth - 1)
-      } yield StreamingT.cons(a, F.pure(s))))
-  }
-
-  // The max possible size of a StreamingT instance (n) will result in
-  // instances of up to n^3 in length when testing flatMap
-  // composition. The current value (8) could result in streams of up
-  // to 512 elements in length. Thus, since F may not be stack-safe,
-  // we want to keep n relatively small.
-  implicit def streamingTArbitrary[F[_], A](implicit F: Monad[F], A: Arbitrary[A]): Arbitrary[StreamingT[F, A]] =
-    Arbitrary(streamingTGen[F, A](8))
-
   implicit def writerArbitrary[L:Arbitrary, V:Arbitrary]: Arbitrary[Writer[L, V]] =
     writerTArbitrary[Id, L, V]
 
   // until this is provided by scalacheck
   implicit def partialFunctionArbitrary[A, B](implicit F: Arbitrary[A => Option[B]]): Arbitrary[PartialFunction[A, B]] =
-    Arbitrary(F.arbitrary.map(Function.unlift))
+    Arbitrary(F.arbitrary.map { f => new PartialFunction[A,B] {
+                                 override def isDefinedAt(a: A): Boolean = f(a).isDefined
+                                 override def apply(a: A): B = f(a).cata(identity, throw new MatchError(a))
+                               }})
+
 
   implicit def coproductArbitrary[F[_], G[_], A](implicit F: Arbitrary[F[A]], G: Arbitrary[G[A]]): Arbitrary[Coproduct[F, G, A]] =
     Arbitrary(Gen.oneOf(

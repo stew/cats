@@ -1,6 +1,9 @@
 package cats
 package tests
 
+import dogs._
+import dogs.Predef._
+import dogs.std._
 import cats.arrow.{Arrow, Choice, Split}
 import cats.data.{Kleisli, Reader}
 import cats.functor.{Contravariant, Strong}

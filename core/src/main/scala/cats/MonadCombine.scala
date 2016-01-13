@@ -1,5 +1,6 @@
 package cats
 
+import dogs.Predef._
 import simulacrum.typeclass
 
 /**
@@ -16,6 +17,6 @@ import simulacrum.typeclass
    */
   def unite[G[_], A](fga: F[G[A]])(implicit G: Foldable[G]): F[A] =
     flatMap(fga) { ga =>
-      G.foldLeft(ga, empty[A])((acc, a) => combine(acc, pure(a)))
+      G.foldLeft(ga, neutral[A])((acc, a) => combine(acc, pure(a)))
     }
 }

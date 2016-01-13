@@ -1,6 +1,9 @@
 package cats
 package tests
 
+import dogs._
+import dogs.Predef._
+import dogs.std._
 import org.scalacheck.Prop.forAll
 import cats.laws.discipline._
 import cats.laws.discipline.eq.tuple3Eq

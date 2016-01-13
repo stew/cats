@@ -1,10 +1,11 @@
 package cats
 package std
 
-import algebra.Eq
+import dogs._
+import dogs.Predef._
 import cats.arrow.{Arrow, Choice}
-import cats.data.Xor
 import cats.functor.Contravariant
+import scala.{Function0,Function1}
 
 private[std] sealed trait Function0Instances {
   implicit val function0Instance: Bimonad[Function0] =
@@ -97,7 +98,7 @@ private[std] sealed trait Function1Semigroup[A, B] extends Semigroup[A => B] {
 private[std] sealed trait Function1Monoid[A, B] extends Monoid[A => B] with Function1Semigroup[A, B] {
   implicit def B: Monoid[B]
 
-  override def empty: A => B = _ => B.empty
+  override def neutral: A => B = _ => B.neutral
 }
 
 private[std] sealed trait Function1SemigroupK extends SemigroupK[Lambda[A => A => A]] {
@@ -105,7 +106,7 @@ private[std] sealed trait Function1SemigroupK extends SemigroupK[Lambda[A => A =
 }
 
 private[std] sealed trait Function1MonoidK extends MonoidK[Lambda[A => A => A]] with Function1SemigroupK {
-  override def empty[A]: A => A = identity[A]
+  override def neutral[A]: A => A = identity[A]
 }
 
 trait FunctionInstances

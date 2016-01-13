@@ -2,7 +2,7 @@ package cats
 package laws
 
 import cats.arrow.Choice
-import cats.data.Xor
+import dogs.Xor
 import cats.syntax.compose._
 
 /**

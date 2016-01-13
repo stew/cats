@@ -1,6 +1,7 @@
 package cats
 package data
 
+import dogs.Predef._
 import cats.functor.Bifunctor
 
 final case class WriterT[F[_], L, V](run: F[(L, V)]) {
@@ -43,7 +44,7 @@ final case class WriterT[F[_], L, V](run: F[(L, V)]) {
     mapBoth((l, v) => (v, l))
 
   def reset(implicit monoidL: Monoid[L], functorF: Functor[F]): WriterT[F, L, V] =
-    mapWritten(_ => monoidL.empty)
+    mapWritten(_ => monoidL.neutral)
 }
 object WriterT extends WriterTInstances with WriterTFunctions
 
@@ -78,7 +79,7 @@ private[data] sealed abstract class WriterTInstances0 extends WriterTInstances1 
     writerTFlatMap[Id, L]
 
   implicit def writerTEq[F[_], L, V](implicit F: Eq[F[(L, V)]]): Eq[WriterT[F, L, V]] =
-    F.on(_.run)
+    F.contramap(_.run)
 }
 
 private[data] sealed abstract class WriterTInstances1 extends WriterTInstances2 {
@@ -195,7 +196,7 @@ private[data] sealed trait WriterTSemigroupK[F[_], L] extends SemigroupK[WriterT
 private[data] sealed trait WriterTMonoidK[F[_], L] extends MonoidK[WriterT[F, L, ?]] with WriterTSemigroupK[F, L] {
   override implicit def F0: MonoidK[F]
 
-  def empty[A]: WriterT[F, L, A] = WriterT(F0.empty)
+  override def neutral[A]: WriterT[F, L, A] = WriterT(F0.neutral)
 }
 
 private[data] sealed trait WriterTAlternative[F[_], L] extends Alternative[WriterT[F, L, ?]] with WriterTMonoidK[F, L] with WriterTApplicative[F, L] {
@@ -205,7 +206,7 @@ private[data] sealed trait WriterTAlternative[F[_], L] extends Alternative[Write
 private[data] sealed trait WriterTMonadFilter[F[_], L] extends MonadFilter[WriterT[F, L, ?]] with WriterTMonad[F, L] {
   override implicit def F0: MonadFilter[F]
 
-  def empty[A]: WriterT[F, L, A] = WriterT(F0.empty)
+  def neutral[A]: WriterT[F, L, A] = WriterT(F0.neutral)
 }
 
 private[data] sealed trait WriterTMonadCombine[F[_], L] extends MonadCombine[WriterT[F, L, ?]] with WriterTMonad[F, L] with WriterTAlternative[F, L] {
@@ -223,10 +224,10 @@ trait WriterTFunctions {
     WriterT.put[F, L, Unit](())(l)
 
   def value[F[_], L, V](v: V)(implicit applicativeF: Applicative[F], monoidL: Monoid[L]): WriterT[F, L, V] =
-    WriterT.put[F, L, V](v)(monoidL.empty)
+    WriterT.put[F, L, V](v)(monoidL.neutral)
 
   def valueT[F[_], L, V](vf: F[V])(implicit functorF: Functor[F], monoidL: Monoid[L]): WriterT[F, L, V] =
-    WriterT.putT[F, L, V](vf)(monoidL.empty)
+    WriterT.putT[F, L, V](vf)(monoidL.neutral)
 }
 
 

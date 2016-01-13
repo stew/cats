@@ -2,6 +2,8 @@ package cats
 package laws
 package discipline
 
+import scala.{Some,None,Option}
+import dogs.Predef._
 import cats.functor.Invariant
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop
@@ -19,7 +21,7 @@ trait InvariantTests[F[_]] extends Laws {
 
     new DefaultRuleSet(
       name = "invariant",
-      parent = None,
+      parent = scala.None,
       "invariant identity" -> forAll(laws.invariantIdentity[A] _),
       "invariant composition" -> forAll(laws.invariantComposition[A, B, C] _))
   }

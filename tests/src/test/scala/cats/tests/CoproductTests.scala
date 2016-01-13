@@ -1,6 +1,8 @@
 package cats.tests
 
-import algebra.Eq
+import dogs._
+import dogs.std._
+import dogs.Predef._
 import algebra.laws.OrderLaws
 import cats._
 import cats.data.Coproduct

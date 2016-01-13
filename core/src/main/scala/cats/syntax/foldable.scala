@@ -1,6 +1,8 @@
 package cats
 package syntax
 
+import dogs.Predef._
+
 trait FoldableSyntax1 {
   implicit def foldableSyntaxU[FA](fa: FA)(implicit U: Unapply[Foldable,FA]): Foldable.Ops[U.M, U.A] =
     new Foldable.Ops[U.M, U.A] {

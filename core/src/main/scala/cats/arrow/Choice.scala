@@ -1,7 +1,7 @@
 package cats
 package arrow
 
-import cats.data.Xor
+import dogs.Xor
 
 trait Choice[F[_, _]] extends Category[F] {
 
@@ -12,7 +12,8 @@ trait Choice[F[_, _]] extends Category[F] {
    *
    * Example:
    * {{{
-   * scala> import cats.data.Xor
+   * scala> import dogs.Predef._
+   * scala> import dogs._
    * scala> import cats.std.function._
    * scala> val b: Boolean => String = _ + " is a boolean"
    * scala> val i: Int => String =  _ + " is an integer"
@@ -33,7 +34,8 @@ trait Choice[F[_, _]] extends Category[F] {
    *
    * Example:
    * {{{
-   * scala> import cats.data.Xor
+   * scala> import dogs.Predef._
+   * scala> import dogs._
    * scala> import cats.std.function._
    * scala> val f: (Int Xor Int) => Int = Choice[Function1].codiagonal[Int]
    *

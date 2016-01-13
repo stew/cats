@@ -1,5 +1,8 @@
 package cats.tests
 
+import dogs._
+import dogs.Predef._
+import dogs.std._
 import cats.{Applicative, Id, Monad, Monoidal, Show}
 import cats.data.{OptionT, Validated, Xor}
 import cats.laws.discipline.{ApplicativeTests, FunctorTests, MonadCombineTests, SerializableTests, MonoidalTests, MonadTests}

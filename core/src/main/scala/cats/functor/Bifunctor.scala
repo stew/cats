@@ -1,6 +1,8 @@
 package cats
 package functor
 
+import dogs.Predef._
+
 /**
  * A type class of types which give rise to two independent, covariant
  * functors.

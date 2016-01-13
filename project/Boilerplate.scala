@@ -197,6 +197,7 @@ object Boilerplate {
 
       block"""
          |package cats
+         |import dogs.Predef._
          |trait MonoidalArityFunctions {
         -  def map$arity[F[_], ${`A..N`}, Z]($fparams)(f: (${`A..N`}) => Z)(implicit monoidal: Monoidal[F], functor: Functor[F]): F[Z] =
         -    functor.map($nestedProducts) { case ${`nested (a..n)`} => f(${`a..n`}) }

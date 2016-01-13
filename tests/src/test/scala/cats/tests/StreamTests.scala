@@ -1,6 +1,9 @@
 package cats
 package tests
 
+import dogs._
+import dogs.Predef._
+import dogs.std._
 import cats.laws.discipline.{CoflatMapTests, MonadCombineTests, SerializableTests, TraverseTests, MonoidalTests}
 import cats.laws.discipline.eq.tuple3Eq
 

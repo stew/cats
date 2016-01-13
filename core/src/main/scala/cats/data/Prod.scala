@@ -1,6 +1,8 @@
 package cats
 package data
 
+import dogs._
+import dogs.Predef._
 /**
  * [[Prod]] is a product to two independent functor values.
  *
@@ -99,8 +101,8 @@ sealed trait ProdSemigroupK[F[_], G[_]] extends SemigroupK[Lambda[X => Prod[F, G
 sealed trait ProdMonoidK[F[_], G[_]] extends MonoidK[Lambda[X => Prod[F, G, X]]] with ProdSemigroupK[F, G] {
   def F: MonoidK[F]
   def G: MonoidK[G]
-  override def empty[A]: Prod[F, G, A] =
-    Prod(F.empty[A], G.empty[A])
+  override def neutral[A]: Prod[F, G, A] =
+    Prod(F.neutral[A], G.neutral[A])
 }
 
 sealed trait ProdAlternative[F[_], G[_]] extends Alternative[Lambda[X => Prod[F, G, X]]]

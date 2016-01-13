@@ -3,7 +3,8 @@ package laws
 
 import cats.Id
 import cats.arrow.Compose
-import cats.data.Const
+import dogs.Const
+import cats.std.const._
 import cats.syntax.traverse._
 import cats.syntax.foldable._
 

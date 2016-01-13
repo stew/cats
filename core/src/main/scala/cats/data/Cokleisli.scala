@@ -1,6 +1,7 @@
 package cats
 package data
 
+import dogs.Predef._
 import cats.arrow.{Arrow, Split}
 import cats.functor.Profunctor
 import cats.{CoflatMap, Comonad, Functor, Monad}
@@ -133,5 +134,5 @@ private trait CokleisliSemigroupK[F[_]] extends SemigroupK[Lambda[A => Cokleisli
 private trait CokleisliMonoidK[F[_]] extends MonoidK[Lambda[A => Cokleisli[F, A, A]]] with CokleisliSemigroupK[F] {
   implicit def F: Comonad[F]
 
-  def empty[A]: Cokleisli[F, A, A] = Cokleisli(F.extract[A])
+  def neutral[A]: Cokleisli[F, A, A] = Cokleisli(F.extract[A])
 }

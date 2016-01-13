@@ -2,7 +2,10 @@ package cats
 package laws
 package discipline
 
+import dogs.Predef._
 import cats.arrow.Arrow
+import scala.Nil
+import scala.collection.immutable.Seq
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop
 import Prop._

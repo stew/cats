@@ -1,5 +1,8 @@
 package cats
 
+import dogs._
+import dogs.Predef._
+
 import simulacrum.typeclass
 
 /**
@@ -63,7 +66,7 @@ import simulacrum.typeclass
    * Overriden from Foldable[_] for efficiency.
    */
   override def reduceLeftToOption[A, B](fa: F[A])(f: A => B)(g: (B, A) => B): Option[B] =
-    Some(reduceLeftTo(fa)(f)(g))
+    Option.some(reduceLeftTo(fa)(f)(g))
 
   /**
    * Apply `f` to the "initial element" of `fa` and lazily combine it
@@ -168,7 +171,7 @@ abstract class NonEmptyReducible[F[_], G[_]](implicit G: Foldable[G]) extends Re
     Always(split(fa)).flatMap { case (a, ga) =>
       G.reduceRightToOption(ga)(f)(g).flatMap {
         case Some(b) => g(a, Now(b))
-        case None => Later(f(a))
+        case None() => Later(f(a))
       }
     }
 }

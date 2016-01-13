@@ -1,6 +1,8 @@
 package cats
 package laws
 
+import dogs.Predef._
+
 import cats.arrow.Arrow
 import cats.std.function._
 import cats.syntax.compose._

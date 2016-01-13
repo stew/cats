@@ -1,6 +1,11 @@
 package cats
 package macros
 
+import java.lang.String
+import scala.Char
+import scala.collection.immutable.{Map,List}
+import scala.Predef.augmentString
+
 import scala.reflect.NameTransformer
 
 object Ops extends machinist.Ops {

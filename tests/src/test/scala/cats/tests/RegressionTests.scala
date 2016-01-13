@@ -1,6 +1,9 @@
 package cats
 package tests
 
+import dogs._
+import dogs.std._
+import dogs.Predef._
 import cats.data.Const
 
 import scala.collection.mutable

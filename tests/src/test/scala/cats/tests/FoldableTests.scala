@@ -1,17 +1,19 @@
 package cats
 package tests
 
+import dogs._
+import dogs.Predef._
+import dogs.std._
 import org.scalatest.prop.PropertyChecks
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Arbitrary.arbitrary
 
-import cats.data.Streaming
 import cats.std.all._
 import cats.laws.discipline.arbitrary._
 
 abstract class FoldableCheck[F[_]: Foldable](name: String)(implicit ArbFInt: Arbitrary[F[Int]]) extends CatsSuite with PropertyChecks {
 
-  def iterator[T](fa: F[T]): Iterator[T]
+  def iterator[T](fa: F[T]): scala.Iterator[T]
 
   test("summation") {
     forAll { (fa: F[Int]) =>

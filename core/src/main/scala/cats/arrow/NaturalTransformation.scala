@@ -1,7 +1,9 @@
 package cats
 package arrow
 
-import cats.data.{Xor, Coproduct}
+import dogs.Predef._
+import dogs.Xor
+import cats.data.Coproduct
 
 trait NaturalTransformation[F[_], G[_]] extends Serializable { self =>
   def apply[A](fa: F[A]): G[A]

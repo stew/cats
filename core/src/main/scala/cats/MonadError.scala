@@ -1,6 +1,10 @@
 package cats
 
-import cats.data.{Xor, XorT}
+import dogs.Xor
+import data.XorT
+
+import scala.PartialFunction
+
 
 /**
  * A monad that also allows you to raise and or handle an error value.
@@ -35,9 +39,9 @@ trait MonadError[F[_], E] extends Monad[F] {
   def handleError[A](fa: F[A])(f: E => A): F[A] = handleErrorWith(fa)(f andThen pure)
 
   /**
-   * Handle errors by turning them into [[cats.data.Xor.Left]] values.
+   * Handle errors by turning them into [[dogs.Xor.Left]] values.
    *
-   * If there is no error, then an [[cats.data.Xor.Right]] value will be returned instead.
+   * If there is no error, then an [[dogs.Xor.Right]] value will be returned instead.
    *
    * All non-fatal errors should be handled by this method.
    */

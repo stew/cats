@@ -8,7 +8,7 @@ trait AlternativeLaws[F[_]] extends ApplicativeLaws[F] with MonoidKLaws[F] {
   implicit def algebra[A]: Monoid[F[A]] = F.algebra[A]
 
   def alternativeRightAbsorption[A, B](ff: F[A => B]): IsEq[F[B]] =
-    (F.empty[A] ap ff) <-> F.empty[B]
+    (F.neutral[A] ap ff) <-> F.neutral[B]
 
   def alternativeLeftDistributivity[A, B](fa: F[A], fa2: F[A], f: A => B): IsEq[F[B]] =
     ((fa |+| fa2) map f) <-> ((fa map f) |+| (fa2 map f))
