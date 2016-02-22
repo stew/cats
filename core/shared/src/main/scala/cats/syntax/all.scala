@@ -4,6 +4,8 @@ package syntax
 trait AllSyntax
     extends ApplySyntax
     with BifunctorSyntax
+    with BifoldableSyntax
+    with CartesianSyntax
     with CoflatMapSyntax
     with ComonadSyntax
     with ComposeSyntax
@@ -15,6 +17,7 @@ trait AllSyntax
     with FunctorSyntax
     with GroupSyntax
     with InvariantSyntax
+    with ListSyntax
     with MonadCombineSyntax
     with MonadFilterSyntax
     with OptionSyntax
@@ -26,6 +29,10 @@ trait AllSyntax
     with SemigroupKSyntax
     with Show.ToShowOps
     with SplitSyntax
+    with StreamingSyntax
     with StrongSyntax
+    with TransLiftSyntax
     with TraverseSyntax
     with XorSyntax
+    with ValidatedSyntax
+    with CoproductSyntax

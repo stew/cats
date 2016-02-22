@@ -4,7 +4,9 @@ package std
 import algebra.Eq
 import algebra.std.{ListMonoid, ListOrder}
 
+import cats.data.Streaming
 import cats.syntax.order._
+import cats.syntax.show._
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
@@ -15,7 +17,7 @@ trait ListInstances extends ListInstances1 {
 
       def empty[A]: List[A] = Nil
 
-      def combine[A](x: List[A], y: List[A]): List[A] = x ++ y
+      def combineK[A](x: List[A], y: List[A]): List[A] = x ++ y
 
       def pure[A](x: A): List[A] = x :: Nil
 
@@ -62,13 +64,21 @@ trait ListInstances extends ListInstances1 {
         fa.forall(p)
 
       override def isEmpty[A](fa: List[A]): Boolean = fa.isEmpty
+
+      override def toStreaming[A](fa: List[A]): Streaming[A] =
+        Streaming.fromList(fa)
     }
 
   implicit def listAlgebra[A]: Monoid[List[A]] = new ListMonoid[A]
   implicit def listOrder[A: Order]: Order[List[A]] = new ListOrder[A]
+
+  implicit def listShow[A:Show]: Show[List[A]] =
+    new Show[List[A]] {
+      def show(fa: List[A]): String = fa.map(_.show).mkString("List(", ", ", ")")
+    }
 }
 
-trait ListInstances1 extends ListInstances2 {
+private[std] sealed trait ListInstances1 extends ListInstances2 {
   implicit def partialOrderList[A: PartialOrder]: PartialOrder[List[A]] =
     new PartialOrder[List[A]] {
       def partialCompare(x: List[A], y: List[A]): Double = {
@@ -90,7 +100,7 @@ trait ListInstances1 extends ListInstances2 {
     }
 }
 
-trait ListInstances2 {
+private[std] sealed trait ListInstances2 {
   implicit def eqList[A: Eq]: Eq[List[A]] =
     new Eq[List[A]] {
       def eqv(x: List[A], y: List[A]): Boolean = {

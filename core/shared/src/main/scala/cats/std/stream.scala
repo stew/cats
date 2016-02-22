@@ -2,6 +2,7 @@ package cats
 package std
 
 import scala.collection.immutable.Stream.Empty
+import cats.syntax.show._
 
 trait StreamInstances {
   implicit val streamInstance: Traverse[Stream] with MonadCombine[Stream] with CoflatMap[Stream] =
@@ -9,7 +10,7 @@ trait StreamInstances {
 
       def empty[A]: Stream[A] = Stream.Empty
 
-      def combine[A](x: Stream[A], y: Stream[A]): Stream[A] = x #::: y
+      def combineK[A](x: Stream[A], y: Stream[A]): Stream[A] = x #::: y
 
       def pure[A](x: A): Stream[A] = Stream(x)
 
@@ -35,8 +36,7 @@ trait StreamInstances {
           if (s.isEmpty) lb else f(s.head, Eval.defer(foldRight(s.tail, lb)(f)))
         }
 
-      def traverse[G[_]: Applicative, A, B](fa: Stream[A])(f: A => G[B]): G[Stream[B]] = {
-        val G = Applicative[G]
+      def traverse[G[_], A, B](fa: Stream[A])(f: A => G[B])(implicit G: Applicative[G]): G[Stream[B]] = {
         def init: G[Stream[B]] = G.pure(Stream.empty[B])
 
         // We use foldRight to avoid possible stack overflows. Since
@@ -57,6 +57,11 @@ trait StreamInstances {
         fa.forall(p)
 
       override def isEmpty[A](fa: Stream[A]): Boolean = fa.isEmpty
+    }
+
+  implicit def streamShow[A: Show]: Show[Stream[A]] =
+    new Show[Stream[A]] {
+      def show(fa: Stream[A]): String = if(fa.isEmpty) "Stream()" else s"Stream(${fa.head.show}, ?)"
     }
 
   // TODO: eventually use algebra's instances (which will deal with

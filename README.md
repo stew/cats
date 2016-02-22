@@ -1,5 +1,11 @@
 ## Cats
 
+[![Build Status](https://api.travis-ci.org/typelevel/cats.svg)](https://travis-ci.org/typelevel/cats)
+[![Workflow](https://badge.waffle.io/typelevel/cats.svg?label=ready&title=Ready)](https://waffle.io/typelevel/cats)
+[![Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/typelevel/cats)
+[![codecov.io](http://codecov.io/github/typelevel/cats/coverage.svg?branch=master)](http://codecov.io/github/typelevel/cats?branch=master)
+[![Maven Central](https://img.shields.io/maven-central/v/org.typelevel/cats_2.11.svg)](https://maven-badges.herokuapp.com/maven-central/org.typelevel/cats_2.11)
+
 ### Overview
 
 Cats is a proof-of-concept library intended to provide abstractions
@@ -17,7 +23,7 @@ To get started with SBT, simply add the following to your `build.sbt`
 file:
 
 ```scala
-libraryDependencies += "org.spire-math" %% "cats" % "0.1.2"
+libraryDependencies += "org.typelevel" %% "cats" % "0.4.1"
 ```
 
 This will pull in all of Cats' modules. If you only require some
@@ -27,19 +33,17 @@ functionality, you can pick-and-choose from amongst these modules
  * `cats-macros`: Macros used by Cats syntax (*required*).
  * `cats-core`: Core type classes and functionality (*required*).
  * `cats-laws`: Laws for testing type class instances.
- * `cats-free`: "Free" data constructors for various type classes.
- * `cats-state`: Monad and transformer support for state.
 
 Release notes for Cats are available in [CHANGES.md](CHANGES.md).
 
-*Cats 0.1.2 is a pre-release: there are not currently source- or
+*Cats 0.4.1 is a pre-release: there are not currently source- or
 binary-compatibility guarantees.*
 
 ### Documentation
 Among the goals of Cats is to provide approachable and useful documentation.
 Documentation is available in the form of tutorials on the Cats
-[website](http://non.github.io/cats/), as well as through
-[Scaladoc](http://non.github.io/cats/api/#package) (also reachable through
+[website](http://typelevel.org/cats), as well as through
+[Scaladoc](http://typelevel.org/cats/api/#package) (also reachable through
 the website).
 
 ### Building Cats
@@ -62,16 +66,11 @@ working with cross-compiling builds, the first things that you will notice is th
 builds:
 
  * Will take longer: To build JVM only, just use the `catsJVM`, or `catsJS` for
-   JS only. And if you want the default project to be  `catsJVM`, just copy the
+   JS only. And if you want the default project to be `catsJVM`, just copy the
    file `scripts/sbtrc-JVM` to `.sbtrc` in the root directory.
 
- * May run out of memory: We suggest you use 
-   [Paul Philips's sbt script](https://github.com/paulp/sbt-extras) that will use the settings from Cats. 
-
-[![Build Status](https://api.travis-ci.org/non/cats.png)](https://travis-ci.org/non/cats)
-[![Workflow](https://badge.waffle.io/non/cats.png?label=ready&title=Ready)](https://waffle.io/non/cats)
-[![Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/non/cats)
-[![codecov.io](http://codecov.io/github/non/cats/coverage.svg?branch=master)](http://codecov.io/github/non/cats?branch=master)
+ * May run out of memory: We suggest you use
+   [Paul Philips's sbt script](https://github.com/paulp/sbt-extras) that will use the settings from Cats.
 
 ### Design
 
@@ -93,7 +92,7 @@ Cats will be designed to use modern *best practices*:
 (We also plan to support [Miniboxing](http://scala-miniboxing.org) in a branch.)
 
 Currently Cats is experimenting with providing laziness via a type
-constructor (`Lazy[_]`), rather than via ad-hoc by-name
+constructor (`Eval[_]`), rather than via ad-hoc by-name
 parameters.This design may change if it ends up being impractical.
 
 The goal is to make Cats as efficient as possible for both strict and
@@ -112,8 +111,6 @@ Initially Cats will support the following modules:
  * `macros`: Macro definitions needed for `core` and other projects.
  * `core`: Definitions for widely-used type classes and data types.
  * `laws`: The encoded laws for type classes, exported to assist third-party testing.
- * `free`: "Free" data constructors for various type classes.
- * `state`: Monad and transformer support for state.
  * `tests`: Verifies the laws, and runs any other tests. Not published.
 
 As the type class families grow, it's possible that additional modules
@@ -183,14 +180,15 @@ The current maintainers (people who can merge pull requests) are:
 
 We are currently following a practice of requiring at least two
 sign-offs to merge PRs (and for large or contentious issues we may
-wait for more).
+wait for more). For typos or other small fixes to documentation we
+relax this to a single sign-off.
 
 ### Contributing
 
 Discussion around Cats is currently happening in the
-[Gitter channel](https://gitter.im/non/cats) as well as on Github
+[Gitter channel](https://gitter.im/typelevel/cats) as well as on Github
 issue and PR pages. You can get an overview of who is working on what
-via [Waffle.io](https://waffle.io/non/cats).
+via [Waffle.io](https://waffle.io/typelevel/cats).
 
 Feel free to open an issue if you notice a bug, have an idea for a
 feature, or have a question about the code. Pull requests are also
